@@ -2,7 +2,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
 const hook = new Webhook(
-	"https://discord.com/api/webhooks/1086283928823922708/6If2II4PQ9prJRZCcr4uBmhwQbYwVkoE3tZZdzuHs20YsvuY6b1g-gVSQJy0OicK8lAG"
+	"https://discord.com/api/webhooks/1086501376567296110/RZmluZ9NfBY4oWAcS9qgRYqiCy-mLmypUS1P8E7rBYCPFbKUegj-KIqz0hh1HRKDd1SP"
 );
 
 hook.setUsername("Tixel Bot");
@@ -43,6 +43,8 @@ function get_prices() {
 	});
 }
 
+var cheapest_price = 999;
+
 async function scrape_actual() {
 	const prices = await get_prices();
 	console.log(prices);
@@ -51,18 +53,28 @@ async function scrape_actual() {
 	console.log(minimum_price);
 	var embed = new MessageBuilder()
 		.setTitle(`Prices found`)
-		.setDescription(`Cheapest price found: ${minimum_price}`)
+		.setDescription(
+			`New cheapest price found: ${minimum_price}
+		
+		@everyone
+		`
+		)
 
 		.setTimestamp();
 
-	if (minimum_price <= 160) hook.send(embed);
+	if (minimum_price < cheapest_price) {
+		hook.send(embed);
+		cheapest_price = minimum_price;
+	}
 
 	scrape_actual();
 }
 
 const embed = new MessageBuilder()
 	.setTitle(`Started bot`)
-	.setDescription(`The bot has been started. Begin checking.`)
+	.setDescription(
+		`The bot has been started. Begin checking for cheapest price.`
+	)
 	.setTimestamp();
 
 function scrape() {
